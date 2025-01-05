@@ -1,5 +1,5 @@
 alert(
-  "بەخێربێن\nبەهیوای سوود وەرگرتن\nئەم ماڵپەرە لەژێرچاککردنە \n ENG RAMAN KOYE"
+  "          بەخێربێن\nبەهیوای سوود وەرگرتن\nئەم ماڵپەرە لەژێرچاککردنە \nدروستکراوە لە لایەن \n          ئەندازیار\n رامان عمر حسن کۆیی"
 );
 const chatBody = document.querySelector(".chat-body");
 const messageInput = document.querySelector(".message-input");
@@ -9,7 +9,7 @@ const fileUploadWrapper = document.querySelector(".file-upload-wrapper");
 const fileCancelButton = document.querySelector("#file-cancel");
 
 // API setup
-const API_KEY = "AIzaSyASsfF8TzR2ARAygrDs79RpunBJOaTHv70";
+const API_KEY = "YOUR_API_KEY_HERE";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
 const userData = {
@@ -32,7 +32,6 @@ const createMessageElement = (content, ...classes) => {
 const generateBotResponse = async (incomingMessageDiv) => {
   const messageElement = incomingMessageDiv.querySelector(".message-text");
 
-  // API request options
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -49,23 +48,18 @@ const generateBotResponse = async (incomingMessageDiv) => {
   };
 
   try {
-    // Fetch bot response from API
     const response = await fetch(API_URL, requestOptions);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error.message);
-
-    // Extract and display bot's response text
     const apiResponseText = data.candidates[0].content.parts[0].text
       .replace(/\*\*(.*?)\*\*/g, "$1")
       .trim();
     messageElement.innerText = apiResponseText;
   } catch (error) {
-    // Handle error in API response
-    console.log(error);
+    console.error(error);
     messageElement.innerText = error.message;
     messageElement.style.color = "#ff0000";
   } finally {
-    // Reset user's file data, remove thinking indicator, and scroll chat to bottom
     userData.file = {};
     incomingMessageDiv.classList.remove("thinking");
     chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" });
@@ -79,7 +73,6 @@ const handleOutgoingMessage = (e) => {
   messageInput.value = "";
   fileUploadWrapper.classList.remove("file-uploaded");
 
-  // Create and display user message
   const messageContent = `<div class="message-text"></div>
   ${
     userData.file.data
@@ -95,19 +88,10 @@ const handleOutgoingMessage = (e) => {
   chatBody.appendChild(outgoingMessageDiv);
   chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" });
 
-  // Simulate bot response with thinking indicator after a delay
   setTimeout(() => {
-    const messageContent = `</svg>
-          <div class="message-text">
-            <div class="thinking-indicator">
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-            </div>
-          </div>`;
-
     const incomingMessageDiv = createMessageElement(
-      messageContent,
+      `</svg><div class="message-text"><div class="thinking-indicator">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`,
       "bot-message",
       "thinking"
     );
@@ -119,8 +103,7 @@ const handleOutgoingMessage = (e) => {
 
 // Handle Enter key press for sending message
 messageInput.addEventListener("keydown", (e) => {
-  const userMessage = e.target.value.trim();
-  if (e.key === "Enter" && userMessage) {
+  if (e.key === "Enter" && e.target.value.trim()) {
     handleOutgoingMessage(e);
   }
 });
@@ -130,51 +113,45 @@ fileInput.addEventListener("change", async () => {
   const file = fileInput.files[0];
   if (!file) return;
 
-  // Check for HEIC format (iOS specific) and convert if necessary
   if (file.type === "image/heic" || file.type === "image/heif") {
-    // Convert HEIC to JPEG if the browser doesn't support it
     const convertedData = await convertHeicToJpeg(file);
     if (convertedData) {
       userData.file = {
         data: convertedData.base64String,
-        mime_type: "image/jpeg", // Changed MIME type to JPEG
+        mime_type: "image/jpeg",
       };
       fileUploadWrapper.querySelector(
         "img"
       ).src = `data:image/jpeg;base64,${convertedData.base64String}`;
     } else {
-      console.log("Failed to convert HEIC image.");
+      console.error("Failed to convert HEIC image.");
       return;
     }
   } else {
-    // Handle standard image file types
     const reader = new FileReader();
     reader.onload = (e) => {
       const base64String = e.target.result.split(",")[1];
       fileUploadWrapper.querySelector("img").src = e.target.result;
       fileUploadWrapper.classList.add("file-uploaded");
 
-      // Store file data in userData
       userData.file = {
         data: base64String,
         mime_type: file.type,
       };
-      fileInput.value = ""; // Reset file input
+      fileInput.value = "";
     };
     reader.readAsDataURL(file);
   }
 });
 
-// Function to convert HEIC format to JPEG base64 (uses a library like heic2any)
+// Convert HEIC format to JPEG base64 (uses heic2any library)
 async function convertHeicToJpeg(heicFile) {
   try {
     const blob = await heic2any({ blob: heicFile, toType: "image/jpeg" });
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        resolve({
-          base64String: reader.result.split(",")[1],
-        });
+        resolve({ base64String: reader.result.split(",")[1] });
       };
       reader.readAsDataURL(blob);
     });
@@ -211,8 +188,7 @@ const picker = new EmojiMart.Picker({
 });
 
 document.querySelector(".chat-form").appendChild(picker);
-
-sendMessageButton.addEventListener("click", (e) => handleOutgoingMessage(e));
+sendMessageButton.addEventListener("click", handleOutgoingMessage);
 document
   .querySelector("#file-upload")
   .addEventListener("click", () => fileInput.click());
