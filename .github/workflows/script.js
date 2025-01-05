@@ -79,8 +79,12 @@ const handleOutgoingMessage = (e) => {
       ? `<img src="data:${userData.file.mime_type};base64,${userData.file.data}" class="attachment" />`
       : ""
   }`;
-  const outgoingMessageDiv = createMessageElement(messageContent, "user-message");
-  outgoingMessageDiv.querySelector(".message-text").textContent = userData.message;
+  const outgoingMessageDiv = createMessageElement(
+    messageContent,
+    "user-message"
+  );
+  outgoingMessageDiv.querySelector(".message-text").textContent =
+    userData.message;
   chatBody.appendChild(outgoingMessageDiv);
   chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" });
 
@@ -116,7 +120,9 @@ fileInput.addEventListener("change", async () => {
         data: convertedData.base64String,
         mime_type: "image/jpeg",
       };
-      fileUploadWrapper.querySelector("img").src = `data:image/jpeg;base64,${convertedData.base64String}`;
+      fileUploadWrapper.querySelector(
+        "img"
+      ).src = `data:image/jpeg;base64,${convertedData.base64String}`;
     } else {
       console.error("Failed to convert HEIC image.");
       return;
@@ -183,4 +189,6 @@ const picker = new EmojiMart.Picker({
 
 document.querySelector(".chat-form").appendChild(picker);
 sendMessageButton.addEventListener("click", handleOutgoingMessage);
-document.querySelector("#file-upload").addEventListener("click", () => fileInput.click());
+document
+  .querySelector("#file-upload")
+  .addEventListener("click", () => fileInput.click());
