@@ -1,5 +1,5 @@
 alert(
-  "          بەخێربێن\nبەهیوای سوود وەرگرتن\nئەم ماڵپەرە لەژێرچاککردنە \nدروستکراوە لە لایەن \n          ئەندازیار\n رامان عمر حسن کۆیی"
+  "          بەخێربێن\nبەهیوای سوود وەرگرتن\nئەم ماڵپەرە لەژێرچاککردنە \nدروستکراوە لە لایەن ئەندازیار\n رامان عمر حسن کۆیی"
 );
 const chatBody = document.querySelector(".chat-body");
 const messageInput = document.querySelector(".message-input");
