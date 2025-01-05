@@ -37,6 +37,9 @@ body {
   display: flex;
   gap: 10px;
   align-items: center;
+
+  justify-content: center; /* Centering the content */
+  width: 100%; /* Ensures full width */
 }
 
 .header-info .chatbot-logo {
@@ -53,6 +56,8 @@ body {
   color: #fff;
   font-size: 1.31rem;
   font-weight: 600;
+
+  text-align: center; /* Centers the text inside the <h2> */
 }
 
 .chat-header #close-chatbot {
